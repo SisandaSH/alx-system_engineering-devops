@@ -1,8 +1,12 @@
-exec { 'fix-os-config':
-  path    => ['/usr/bin', '/sbin', '/bin', '/usr/sbin'],
-  command => "sed -ir 's/^holberton hard nofile 5$/holberton hard nofile 50000/g' /etc/security/limits.conf",
+# Fix problem of high amount files opened
+
+exec {'replace-1':
+  provider => shell,
+  command  => 'sudo sed -i "s/nofile 5/nofile 50000/" /etc/security/limits.conf',
+  before   => Exec['replace-2'],
 }
-exec { 'fix-os-config2':
-  path    => ['/usr/bin', '/sbin', '/bin', '/usr/sbin'],
-  command => "sed -ir 's/^holberton soft nofile 4$/holberton hard nofile 40000/g' /etc/security/limits.conf",
+
+exec {'replace-2':
+  provider => shell,
+  command  => 'sudo sed -i "s/nofile 4/nofile 40000/" /etc/security/limits.conf',
 }
